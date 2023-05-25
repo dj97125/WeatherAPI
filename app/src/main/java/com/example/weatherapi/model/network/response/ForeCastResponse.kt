@@ -1,4 +1,4 @@
-package com.example.weatherapi.model.local.response
+package com.example.weatherapi.model.network.response
 
 data class ForeCastResponse(
     val list: List<ForeCast>?,

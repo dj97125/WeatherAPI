@@ -1,10 +1,16 @@
 package com.example.weatherapi.di
 
 import android.content.Context
+import android.util.Log
 import androidx.room.Room
 import com.example.weatherapi.common.BASE_URL
+import com.example.weatherapi.common.DATABASE_NAME
+import com.example.weatherapi.common.TAG
 import com.example.weatherapi.domain.Repository
 import com.example.weatherapi.domain.RepositoryImpl
+import com.example.weatherapi.model.local.LocalDataSource
+import com.example.weatherapi.model.local.LocalDataSourceImpl
+import com.example.weatherapi.model.local.WeatherDB
 import com.example.weatherapi.model.network.NetworkDataSource
 import com.example.weatherapi.model.network.NetworkDataSourceImpl
 import com.example.weatherapi.model.network.WeatherApi
@@ -16,6 +22,7 @@ import dagger.hilt.android.components.ViewModelComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.scopes.ViewModelScoped
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import okhttp3.OkHttpClient
@@ -40,10 +47,10 @@ interface Module {
         networkDataSourceImpl: NetworkDataSourceImpl
     ): NetworkDataSource
 
-//    @Binds
-//    fun bindLocalDataSource(
-//        localDataSourceImpl: LocalDataSourceImpl
-//    ): LocalDataSource
+    @Binds
+    fun bindLocalDataSource(
+        localDataSourceImpl: LocalDataSourceImpl
+    ): LocalDataSource
 
 
     companion object {
@@ -62,9 +69,9 @@ interface Module {
                 .addInterceptor(HttpLoggingInterceptor().apply {
                     level = HttpLoggingInterceptor.Level.BODY
                 })
-                .connectTimeout(5, TimeUnit.SECONDS)
-                .readTimeout(5, TimeUnit.SECONDS)
-                .writeTimeout(5, TimeUnit.SECONDS)
+                .connectTimeout(30, TimeUnit.SECONDS)
+                .readTimeout(30, TimeUnit.SECONDS)
+                .writeTimeout(30, TimeUnit.SECONDS)
                 .build()
 
         @Provides
@@ -76,17 +83,23 @@ interface Module {
             CoroutineScope(dispatcher)
 
 
-//        @Provides
-//        @ProductionDB
-//        fun provideRoom(@ApplicationContext context: Context): SchoolDB =
-//            Room.databaseBuilder(
-//                context,
-//                SchoolDB::class.java, DATABASE_NAME
-//            ).fallbackToDestructiveMigration().build()
-//
-//
-//        @Provides
-//        fun provideCountryDao(@ProductionDB dataBase: SchoolDB) = dataBase.schoolDao()
+        @Provides
+        fun provideRoom(@ApplicationContext context: Context): WeatherDB =
+            Room.databaseBuilder(
+                context,
+                WeatherDB::class.java, DATABASE_NAME
+            ).fallbackToDestructiveMigration().build()
+
+
+        @Provides
+        fun provideCountryDao(dataBase: WeatherDB) = dataBase.weatherDao()
+
+        @Provides
+        fun provideEXceptionHandler(): CoroutineExceptionHandler =
+            CoroutineExceptionHandler { _, throwable ->
+                Log.e(TAG, "$throwable")
+            }
+
 
     }
 }
