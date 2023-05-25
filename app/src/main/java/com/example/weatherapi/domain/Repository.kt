@@ -5,12 +5,14 @@ import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
 import com.example.weatherapi.model.local.LocalDataSource
 import com.example.weatherapi.model.network.NetworkDataSource
+import com.example.weatherapi.model.network.response.ForeCastResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 interface Repository {
     fun getWeather(code: String, unit: String): Flow<StateAction>
+    fun getForeCast(code: String, unit: String): Flow<StateAction>
 }
 
 class RepositoryImpl @Inject constructor(
@@ -40,6 +42,29 @@ class RepositoryImpl @Inject constructor(
         } else {
             val cache = localDataSource.getTodaysWeather()
             emit(StateAction.Succes(cache, 200))
+        }
+    }
+
+    override fun getForeCast(code: String, unit: String): Flow<StateAction> = flow {
+        val connected = InternetCheck()
+        val remoteService = networkDataSource.getForeCast(code = code, unit = unit)
+
+        if (connected.isConnected()) {
+            remoteService.collect { stateAction ->
+                when (stateAction) {
+                    is StateAction.Succes<*> -> {
+                        val retrievedUnitInfo = stateAction.response as List<ForeCastResponse>
+                        emit(StateAction.Succes(retrievedUnitInfo, stateAction.code))
+                    }
+
+                    is StateAction.Error -> {
+                        emit(StateAction.Error(stateAction.error))
+                    }
+
+                    else -> {}
+                }
+
+            }
         }
     }
 

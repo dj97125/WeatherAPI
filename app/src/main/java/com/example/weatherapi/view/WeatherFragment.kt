@@ -9,6 +9,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.weatherapi.common.BaseFragment
 import com.example.weatherapi.common.IMAGES_URL
+import com.example.weatherapi.common.IMAGE_FORMAT
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.common.UNITS_DEFAULT
 import com.example.weatherapi.common.ZIP_CODE_DEFAULT
@@ -16,6 +17,8 @@ import com.example.weatherapi.common.getTemperatureFormat
 import com.example.weatherapi.common.toast
 import com.example.weatherapi.databinding.FragmentWeatherBinding
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
+import com.example.weatherapi.model.network.response.ForeCastResponse
+import com.example.weatherapi.view.adapters.ForeCastAdapter
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -29,9 +32,10 @@ class WeatherFragment : BaseFragment() {
     private var units: String = UNITS_DEFAULT
     private var zipCode: String = ZIP_CODE_DEFAULT
     private var isMessage: Boolean = false
-//    private val nycdapter by lazy {
-//        NYCAdapter(this)
-//    }
+
+    private val forecastAdapter by lazy {
+        ForeCastAdapter(this)
+    }
 
 
     override fun onCreateView(
@@ -39,16 +43,19 @@ class WeatherFragment : BaseFragment() {
         savedInstanceState: Bundle?
     ): View {
         initObservers()
+        binding.apply {
+            imVSearch.setOnClickListener {
+                isMessage = true
+                zipCode = binding.eTZipCode.text.toString()
+                weatherForecastViewModel.getWeather(code = zipCode, unit = units)
+                initObservers()
+            }
 
-        binding.imVSearch.setOnClickListener {
-            isMessage = true
-            zipCode = binding.eTZipCode.text.toString()
-            weatherForecastViewModel.getWeather(code = zipCode, unit = units)
-            initObservers()
+            rvForecast.adapter = forecastAdapter
+
+
+            return root
         }
-
-
-        return binding.root
     }
 
     override fun onResume() {
@@ -80,12 +87,11 @@ class WeatherFragment : BaseFragment() {
                             val retrievedInfo = stateAction.response as WeatherDomain
                             binding.apply {
                                 tvCity.text = retrievedInfo.name
-
                                 tvTemperature.text =
                                     retrievedInfo.main?.temp?.getTemperatureFormat(units)
                                 tvDescription.text = retrievedInfo.weather.first()?.main
                                 Picasso.get()
-                                    .load(IMAGES_URL + retrievedInfo.weather.first()?.icon + ".png")
+                                    .load(IMAGES_URL + retrievedInfo.weather.first()?.icon + IMAGE_FORMAT)
                                     .into(imVCurrentWeather)
                             }
                         }
@@ -100,6 +106,25 @@ class WeatherFragment : BaseFragment() {
                         }
 
                     }
+
+                    weatherForecastViewModel.forecastResponse.collect { stateAction ->
+                        when (stateAction) {
+                            is StateAction.Succes<*> -> {
+                                val retrievedInfo = stateAction.response as List<ForeCastResponse>
+                                forecastAdapter.updateData(retrievedInfo)
+
+                            }
+
+                            is StateAction.Error -> {
+                                val msj = stateAction.error.message.toString()
+
+                                if (isMessage && msj.isNotEmpty()) {
+                                    isMessage = activity?.toast(msj) == true
+
+                                }
+                            }
+
+                        }
                 }
             }
         }

@@ -18,6 +18,7 @@ import javax.inject.Inject
 
 interface NetworkDataSource {
     fun getWeather(code: String, unit: String): Flow<StateAction>
+    fun getForeCast(code: String, unit: String): Flow<StateAction>
 }
 
 class NetworkDataSourceImpl @Inject constructor(
@@ -28,6 +29,22 @@ class NetworkDataSourceImpl @Inject constructor(
         if (response.isSuccessful) {
             response.body()?.let {
                 emit(StateAction.Succes(it.convertToDomainWeather(), response.code()))
+            }
+        } else {
+            if (response.code().toString().startsWith("4")) {
+                emit(StateAction.Error(Exception400()))
+            } else {
+                emit(StateAction.Error(FailedNetworkResponseException()))
+            }
+
+        }
+    }
+
+    override fun getForeCast(code: String, unit: String): Flow<StateAction> = flow {
+        val response = service.getForecast(zip = code, units = unit)
+        if (response.isSuccessful) {
+            response.body()?.let {
+                emit(StateAction.Succes(it, response.code()))
             }
         } else {
             if (response.code().toString().startsWith("4")) {

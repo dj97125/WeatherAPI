@@ -24,7 +24,7 @@ interface WeatherApi {
     ): Response<WeatherResponse>
 
     @GET(END_POINT_FORECAST)
-    suspend fun getCityWeatherDetails(
+    suspend fun getForecast(
         @Query(PARAM_ZIP) zip: String,
         @Query(PARAM_UNITS) units: String,
         @Query(PARAM_APPID) token: String = TOKEN,

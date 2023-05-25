@@ -13,6 +13,7 @@ const val PARAM_APPID = "appid"
 const val PARAM_UNITS = "units"
 
 const val TAG = "ERROR VIEW MODEL"
+const val IMAGE_FORMAT = ".png"
 
 const val DATABASE_NAME = "WeatherDB"
 
