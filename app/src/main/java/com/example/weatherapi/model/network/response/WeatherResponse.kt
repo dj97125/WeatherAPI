@@ -1,9 +1,5 @@
 package com.example.weatherapi.model.network.response
 
-import com.example.weatherapi.domain.WeatherDomain.CityCoordinatesDomain
-import com.example.weatherapi.domain.WeatherDomain.CityWeatherDomain
-import com.example.weatherapi.domain.WeatherDomain.WeatherDescriptionDomain
-
 
 data class WeatherResponse(
     val coord: CityCoordinates?,

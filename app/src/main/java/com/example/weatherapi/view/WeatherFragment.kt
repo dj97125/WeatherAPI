@@ -1,5 +1,6 @@
 package com.example.weatherapi.view
 
+import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -31,24 +32,28 @@ import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class WeatherFragment : BaseFragment() {
-    private val binding by lazy {
-        FragmentWeatherBinding.inflate(layoutInflater)
-    }
 
     private var units: String = UNITS_DEFAULT
     private var zipCode: String = ZIP_CODE_DEFAULT
     private var isMessage: Boolean = false
+
+    private val binding by lazy {
+        FragmentWeatherBinding.inflate(layoutInflater)
+    }
 
     private val forecastAdapter by lazy {
         ForeCastAdapter()
     }
 
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
         initObservers()
+
+
         binding.apply {
             imVSearch.setOnClickListener {
                 isMessage = true
@@ -136,12 +141,14 @@ class WeatherFragment : BaseFragment() {
                             val makingForecastList = mutableListOf<ForeCast>()
 
                             binding.apply {
-                                llWeatherToday.isVisible = true
-                                llWeatherForecast.isVisible = true
+                                forecastInfo.isVisible = true
                             }
 
                             response.list?.filter { forecastFilter ->
-                                forecastFilter.dt_txt?.substring(0, 10) == dayAfterTomorrowDate.format(formatter)
+                                forecastFilter.dt_txt?.substring(
+                                    0,
+                                    10
+                                ) == dayAfterTomorrowDate.format(formatter)
                             }?.forEach { forecast ->
                                 makingForecastList.add(forecast)
                             }
@@ -159,8 +166,6 @@ class WeatherFragment : BaseFragment() {
                             makingForecastList.clear()
 
 
-
-
                         }
 
                         is StateAction.Error -> {
@@ -169,6 +174,10 @@ class WeatherFragment : BaseFragment() {
                             if (isMessage && msj.isNotEmpty()) {
                                 isMessage = activity?.toast(msj) == true
 
+                            }
+
+                            binding.apply {
+                                forecastInfo.isVisible = false
                             }
                         }
 

@@ -9,7 +9,6 @@ import com.example.weatherapi.common.PARAM_ZIP
 import com.example.weatherapi.common.TOKEN
 import com.example.weatherapi.model.network.response.ForeCastResponse
 import com.example.weatherapi.model.network.response.WeatherResponse
-import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Query

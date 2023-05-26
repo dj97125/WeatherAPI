@@ -15,6 +15,7 @@ data class CityWeatherDomain(
     val temp_min: Double?,
     val temp_max: Double?,
 )
+
 data class WeatherDescriptionDomain(
     val id: Int?,
     val main: String?,

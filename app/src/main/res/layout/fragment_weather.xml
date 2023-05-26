@@ -3,246 +3,238 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     tools:context=".view.WeatherFragment">
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeRefresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/cityInfo"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:background="@color/blue"
-                app:layout_constraintBottom_toTopOf="@id/scrollView"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/tv_City"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.03"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.034"
-                    tools:text="Mineappolis" />
-
-                <EditText
-                    android:id="@+id/eTZipCode"
-                    android:layout_width="150dp"
-                    android:layout_height="wrap_content"
-                    android:background="@null"
-                    android:gravity="center"
-                    android:hint="Zip Code"
-                    android:textColor="@color/white"
-                    android:textColorHint="@color/white"
-                    app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
-                    app:layout_constraintEnd_toStartOf="@id/imVSettings"
-                    app:layout_constraintHorizontal_bias="0.0"
-                    app:layout_constraintStart_toEndOf="@id/tv_City"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageView
-                    android:id="@+id/imVSearch"
-                    android:layout_width="50sp"
-                    android:layout_height="50sp"
-                    android:padding="10dp"
-                    android:src="@drawable/baseline_search_24"
-                    app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
-                    app:layout_constraintEnd_toStartOf="@id/imVSettings"
-                    app:layout_constraintHorizontal_bias="0.27"
-                    app:layout_constraintStart_toEndOf="@+id/eTZipCode"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-
-                <ImageView
-                    android:id="@+id/imVSettings"
-                    android:layout_width="50sp"
-                    android:layout_height="50sp"
-                    android:padding="10dp"
-                    android:src="@drawable/settings"
-                    app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@+id/imVSearch"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/tv_Temperature"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:textColor="@color/white"
-                    android:textSize="50sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toTopOf="@id/tv_Description"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/tv_City"
-                    tools:text="100" />
-
-                <TextView
-                    android:id="@+id/tv_Description"
-                    android:layout_width="300dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:padding="15dp"
-                    android:textColor="@color/white"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    tools:text="Clear" />
-
-                <ImageView
-                    android:id="@+id/imVCurrentWeather"
-                    android:layout_width="80sp"
-                    android:layout_height="80sp"
-                    android:layout_marginBottom="15dp"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toEndOf="@id/tv_Description"
-                    app:layout_constraintTop_toBottomOf="@id/tv_Temperature"
-                    tools:src="@drawable/baseline_cloud_24" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <androidx.core.widget.NestedScrollView
-                android:id="@+id/scrollView"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/cityInfo">
+                app:layout_constraintTop_toTopOf="parent">
 
-                <LinearLayout
-                    android:id="@+id/llForecastInfo"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/cityInfo"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:background="@color/blue"
+                    app:layout_constraintBottom_toTopOf="@id/forecastInfo"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <TextView
+                        android:id="@+id/tv_City"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.03"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.034"
+                        tools:text="Mineappolis" />
+
+                    <EditText
+                        android:id="@+id/eTZipCode"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:background="@null"
+                        android:gravity="center"
+                        android:inputType="number"
+                        android:hint="Zip Code"
+                        android:textColor="@color/white"
+                        android:textColorHint="@color/white"
+                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintEnd_toStartOf="@id/imVSettings"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@id/tv_City"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <ImageView
+                        android:id="@+id/imVSearch"
+                        android:layout_width="50sp"
+                        android:layout_height="50sp"
+                        android:padding="10dp"
+                        android:src="@drawable/baseline_search_24"
+                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintEnd_toStartOf="@id/imVSettings"
+                        app:layout_constraintHorizontal_bias="0.27"
+                        app:layout_constraintStart_toEndOf="@+id/eTZipCode"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+
+                    <ImageView
+                        android:id="@+id/imVSettings"
+                        android:layout_width="50sp"
+                        android:layout_height="50sp"
+                        android:padding="10dp"
+                        android:src="@drawable/settings"
+                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/imVSearch"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/tv_Temperature"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="15dp"
+                        android:textColor="@color/white"
+                        android:textSize="50sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toTopOf="@id/tv_Description"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tv_City"
+                        tools:text="100" />
+
+                    <TextView
+                        android:id="@+id/tv_Description"
+                        android:layout_width="300dp"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:padding="15dp"
+                        android:textColor="@color/white"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        tools:text="Clear" />
+
+                    <ImageView
+                        android:id="@+id/imVCurrentWeather"
+                        android:layout_width="80sp"
+                        android:layout_height="80sp"
+                        android:layout_marginBottom="15dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@id/tv_Description"
+                        app:layout_constraintTop_toBottomOf="@id/tv_Temperature"
+                        tools:src="@drawable/baseline_cloud_24" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/forecastInfo"
+                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/cityInfo">
 
-                    <LinearLayout
-                        android:id="@+id/ll_WeatherToday"
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/todaysForecast"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:layout_margin="5dp"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="3dp"
+                        app:layout_constraintBottom_toTopOf="@id/tomorrowsForecast"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
 
-                        <androidx.cardview.widget.CardView
+
+                        <TextView
+                            android:id="@+id/tv_WeatherToday"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="3dp">
+                            android:layout_weight="1"
+                            android:background="@color/blue"
+                            android:gravity="start"
+                            android:padding="15dp"
+                            android:text="@string/today"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
 
-                            <LinearLayout
+                        <androidx.core.widget.NestedScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rv_Weather_today"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:layout_marginTop="75dp"
+                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                                app:spanCount="2" />
 
-                                <TextView
-                                    android:id="@+id/tv_WeatherToday"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:background="@color/blue"
-                                    android:gravity="start"
-                                    android:padding="15dp"
-                                    android:text="@string/tomorrow"
-                                    android:textColor="@color/white"
-                                    android:textSize="25sp" />
+                        </androidx.core.widget.NestedScrollView>
 
+                    </androidx.cardview.widget.CardView>
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:padding="10dp">
-
-                                    <androidx.recyclerview.widget.RecyclerView
-                                        android:id="@+id/rv_Weather_today"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
-                                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                                        app:spanCount="2" />
-                                </LinearLayout>
-
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-
-
-                    <LinearLayout
-                        android:id="@+id/ll_WeatherForecast"
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/tomorrowsForecast"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:visibility="gone">
+                        android:layout_margin="5dp"
+                        app:cardCornerRadius="5dp"
+                        app:cardElevation="3dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/todaysForecast">
 
-                        <androidx.cardview.widget.CardView
+
+                        <TextView
+                            android:id="@+id/tv_WeatherTomorrow"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_margin="5dp"
-                            app:cardCornerRadius="5dp"
-                            app:cardElevation="3dp">
+                            android:layout_weight="1"
+                            android:background="@color/blue"
+                            android:gravity="start"
+                            android:padding="15dp"
+                            android:text="@string/tomorrow"
+                            android:textColor="@color/white"
+                            android:textSize="25sp" />
 
-                            <LinearLayout
+                        <androidx.core.widget.NestedScrollView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <androidx.recyclerview.widget.RecyclerView
+                                android:id="@+id/rvForecast_tomorrow"
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:orientation="vertical">
+                                android:orientation="horizontal"
+                                android:layout_marginTop="75dp"
+                                app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                                app:spanCount="2" />
 
-                                <TextView
-                                    android:id="@+id/tv_WeatherTomorrow"
-                                    android:layout_width="match_parent"
-                                    android:layout_height="0dp"
-                                    android:layout_weight="1"
-                                    android:background="@color/blue"
-                                    android:gravity="start"
-                                    android:padding="15dp"
-                                    android:text="@string/today"
-                                    android:textColor="@color/white"
-                                    android:textSize="25sp" />
+                        </androidx.core.widget.NestedScrollView>
+
+                    </androidx.cardview.widget.CardView>
 
 
-                                <LinearLayout
-                                    android:layout_width="match_parent"
-                                    android:layout_height="wrap_content"
-                                    android:padding="10dp">
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                    <androidx.recyclerview.widget.RecyclerView
-                                        android:id="@+id/rvForecast_tomorrow"
-                                        android:layout_width="match_parent"
-                                        android:layout_height="wrap_content"
-                                        android:orientation="horizontal"
-                                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                                        app:spanCount="2" />
-                                </LinearLayout>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-                            </LinearLayout>
-
-                        </androidx.cardview.widget.CardView>
-                    </LinearLayout>
-                </LinearLayout>
-            </androidx.core.widget.NestedScrollView>
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
 
     </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 

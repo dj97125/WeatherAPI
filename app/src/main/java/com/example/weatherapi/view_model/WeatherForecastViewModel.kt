@@ -40,7 +40,7 @@ class WeatherForecastViewModel @Inject constructor(
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
-                    repository.getWeather(code = code, unit = unit).collect() { stateAction ->
+                    repository.getWeather(code = code, unit = unit).collect { stateAction ->
                         when (stateAction) {
                             is StateAction.Succes<*> -> {
                                 val response = stateAction.response as WeatherDomain
@@ -68,7 +68,7 @@ class WeatherForecastViewModel @Inject constructor(
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
-                    repository.getForeCast(code = code, unit = unit).collect() { stateAction ->
+                    repository.getForeCast(code = code, unit = unit).collect { stateAction ->
                         when (stateAction) {
                             is StateAction.Succes<*> -> {
 

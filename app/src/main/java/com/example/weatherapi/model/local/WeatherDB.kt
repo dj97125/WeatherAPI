@@ -9,7 +9,6 @@ import androidx.room.RoomDatabase
 import com.example.weatherapi.model.local.entities.WeatherEntity
 
 
-
 @Dao
 interface WeatherDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -30,6 +29,6 @@ interface WeatherDao {
     entities = [WeatherEntity::class],
     exportSchema = false
 )
-abstract class WeatherDB: RoomDatabase() {
+abstract class WeatherDB : RoomDatabase() {
     abstract fun weatherDao(): WeatherDao
 }
