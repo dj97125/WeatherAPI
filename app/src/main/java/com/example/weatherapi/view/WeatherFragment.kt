@@ -1,9 +1,12 @@
 package com.example.weatherapi.view
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
+import androidx.core.view.isVisible
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -17,11 +20,14 @@ import com.example.weatherapi.common.getTemperatureFormat
 import com.example.weatherapi.common.toast
 import com.example.weatherapi.databinding.FragmentWeatherBinding
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
+import com.example.weatherapi.model.network.response.ForeCast
 import com.example.weatherapi.model.network.response.ForeCastResponse
 import com.example.weatherapi.view.adapters.ForeCastAdapter
 import com.squareup.picasso.Picasso
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
 @AndroidEntryPoint
 class WeatherFragment : BaseFragment() {
@@ -34,7 +40,7 @@ class WeatherFragment : BaseFragment() {
     private var isMessage: Boolean = false
 
     private val forecastAdapter by lazy {
-        ForeCastAdapter(this)
+        ForeCastAdapter()
     }
 
 
@@ -51,7 +57,8 @@ class WeatherFragment : BaseFragment() {
                 initObservers()
             }
 
-            rvForecast.adapter = forecastAdapter
+            rvForecastTomorrow.adapter = forecastAdapter
+            rvWeatherToday.adapter = forecastAdapter
 
 
             return root
@@ -73,12 +80,19 @@ class WeatherFragment : BaseFragment() {
             setOnRefreshListener {
 
                 weatherForecastViewModel.getWeather(code = zipCode, unit = units)
+                weatherForecastViewModel.getForecast(code = zipCode, unit = units)
                 isRefreshing = false
             }
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun initObservers() {
+
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd")
+        val tomorrowsDate = LocalDateTime.now().plusDays(1)
+        val dayAfterTomorrowDate = LocalDateTime.now().plusDays(2)
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 weatherForecastViewModel.weatherResponse.collect { stateAction ->
@@ -105,34 +119,66 @@ class WeatherFragment : BaseFragment() {
                             }
                         }
 
+                        else -> {}
                     }
+                }
+            }
 
-                    weatherForecastViewModel.forecastResponse.collect { stateAction ->
-                        when (stateAction) {
-                            is StateAction.Succes<*> -> {
-                                val retrievedInfo = stateAction.response as List<ForeCastResponse>
-                                forecastAdapter.updateData(retrievedInfo)
 
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                weatherForecastViewModel.forecastResponse.collect { stateAction ->
+                    when (stateAction) {
+                        is StateAction.Succes<*> -> {
+                            val response = stateAction.response as ForeCastResponse
+                            val makingForecastList = mutableListOf<ForeCast>()
+
+                            binding.apply {
+                                llWeatherToday.isVisible = true
+                                llWeatherForecast.isVisible = true
                             }
 
-                            is StateAction.Error -> {
-                                val msj = stateAction.error.message.toString()
-
-                                if (isMessage && msj.isNotEmpty()) {
-                                    isMessage = activity?.toast(msj) == true
-
-                                }
+                            response.list?.filter { forecastFilter ->
+                                forecastFilter.dt_txt?.substring(0, 10) == dayAfterTomorrowDate.format(formatter)
+                            }?.forEach { forecast ->
+                                makingForecastList.add(forecast)
                             }
+                            forecastAdapter.updateData(makingForecastList)
+                            makingForecastList.clear()
+
+                            response.list?.filter { forecastFilter ->
+                                forecastFilter.dt_txt?.substring(0, 10) == tomorrowsDate.format(
+                                    formatter
+                                )
+                            }?.forEach { forecast ->
+                                makingForecastList.add(forecast)
+                            }
+                            forecastAdapter.updateData(makingForecastList)
+                            makingForecastList.clear()
+
+
+
 
                         }
+
+                        is StateAction.Error -> {
+                            val msj = stateAction.error.message.toString()
+
+                            if (isMessage && msj.isNotEmpty()) {
+                                isMessage = activity?.toast(msj) == true
+
+                            }
+                        }
+
+                        else -> {}
+                    }
                 }
             }
         }
 
-
     }
-
-
 }
 
 

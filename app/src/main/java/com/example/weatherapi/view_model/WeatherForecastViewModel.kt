@@ -71,9 +71,12 @@ class WeatherForecastViewModel @Inject constructor(
                     repository.getForeCast(code = code, unit = unit).collect() { stateAction ->
                         when (stateAction) {
                             is StateAction.Succes<*> -> {
-                                val response = stateAction.response as List<ForeCastResponse>
+
+                                val response = stateAction.response as ForeCastResponse
                                 val httpCode = stateAction.code
-                                _forecastResponse.value = StateAction.Succes(response, httpCode)
+
+                                _forecastResponse.value =
+                                    StateAction.Succes(response, httpCode)
                             }
 
                             is StateAction.Error -> {

@@ -1,13 +1,18 @@
 package com.example.weatherapi.domain
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.example.weatherapi.common.InternetCheck
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
 import com.example.weatherapi.model.local.LocalDataSource
 import com.example.weatherapi.model.network.NetworkDataSource
+import com.example.weatherapi.model.network.response.ForeCast
 import com.example.weatherapi.model.network.response.ForeCastResponse
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 interface Repository {
@@ -26,6 +31,7 @@ class RepositoryImpl @Inject constructor(
             remoteService.collect { stateAction ->
                 when (stateAction) {
                     is StateAction.Succes<*> -> {
+
                         val retrievedUnitInfo = stateAction.response as WeatherDomain
                         emit(StateAction.Succes(retrievedUnitInfo, stateAction.code))
                         localDataSource.insertTodaysWeather(retrievedUnitInfo)
@@ -45,6 +51,7 @@ class RepositoryImpl @Inject constructor(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getForeCast(code: String, unit: String): Flow<StateAction> = flow {
         val connected = InternetCheck()
         val remoteService = networkDataSource.getForeCast(code = code, unit = unit)
@@ -53,8 +60,8 @@ class RepositoryImpl @Inject constructor(
             remoteService.collect { stateAction ->
                 when (stateAction) {
                     is StateAction.Succes<*> -> {
-                        val retrievedUnitInfo = stateAction.response as List<ForeCastResponse>
-                        emit(StateAction.Succes(retrievedUnitInfo, stateAction.code))
+                        val response = stateAction.response as ForeCastResponse
+                        emit(StateAction.Succes(response, stateAction.code))
                     }
 
                     is StateAction.Error -> {

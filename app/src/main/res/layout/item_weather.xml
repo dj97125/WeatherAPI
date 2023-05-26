@@ -1,36 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:layout_margin="5dp"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="150dp"
+    android:layout_height="150dp">
 
     <TextView
         android:id="@+id/tvTime"
-        android:gravity="center"
-        android:textSize="15sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="9:00 p.m."/>
+        android:gravity="center"
+        android:textSize="15sp"
+        app:layout_constraintBottom_toTopOf="@+id/ivWeather"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="9:00 p.m." />
 
     <ImageView
-        android:textSize="18sp"
         android:id="@+id/ivWeather"
         android:layout_width="match_parent"
         android:layout_height="60dp"
         android:padding="5dp"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toTopOf="@+id/tvTemp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTime"
         tools:ignore="ContentDescription,ImageContrastCheck"
         tools:src="@mipmap/ic_launcher" />
 
     <TextView
-        android:layout_marginBottom="25dp"
         android:id="@+id/tvTemp"
-        android:gravity="center"
-        android:textStyle="bold"
-        android:textSize="18sp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="8 C°"/>
+        android:gravity="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/ivWeather"
+        tools:text="8 C°" />
 
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
