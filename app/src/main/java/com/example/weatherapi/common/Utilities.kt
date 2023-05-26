@@ -2,6 +2,7 @@ package com.example.weatherapi.common
 
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.widget.Toast
@@ -49,4 +50,16 @@ fun Context.hasLocationPermission(): Boolean {
         this,
         Manifest.permission.ACCESS_FINE_LOCATION
     ) == PackageManager.PERMISSION_GRANTED
+}
+
+fun Context.provideAlertPopUp(
+    title: String,
+    message: String
+) {
+    AlertDialog.Builder(this).setTitle(title)
+        .setMessage(message)
+        .setNegativeButton("OK") { _, _ -> }
+        .setCancelable(false)
+        .create()
+        .show()
 }

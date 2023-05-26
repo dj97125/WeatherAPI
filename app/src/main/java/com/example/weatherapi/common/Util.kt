@@ -17,8 +17,12 @@ const val IMAGE_FORMAT = ".png"
 
 const val DATABASE_NAME = "WeatherDB"
 
+
 const val UNITS_DEFAULT = "imperial"
 const val ZIP_CODE_DEFAULT = "85210"
+const val TITLE_FOR_NO_INTERNET_CONNECTION = "Alert"
+const val MESSAGE_FOR_NO_INTERNET_CONNECTION =
+    "You dont have internet conection"
 
 
 
