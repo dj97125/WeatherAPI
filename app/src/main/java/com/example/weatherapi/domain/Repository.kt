@@ -12,6 +12,21 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
+
+/*
+     if i would have more time:
+
+   - id like to implement the users location
+   - id like to use my persist information in room for fetching the las infomation
+   in my entity and make a backend petition
+   - id like to implement workManager for every day while having wifi conection just
+   keep the information for todays date and errase the prev day or prev days
+   - id like testing my view model and my corroutines using mokito and junit4 for my
+   corroutines
+   - in my view i got an settings section while id like the customer choose between
+   differentes degress (K,F,C)
+   - id like to implement the geo code API for let the user do a research just for city
+ */
 interface Repository {
     fun getWeather(code: String, unit: String): Flow<StateAction>
     fun getForeCast(code: String, unit: String): Flow<StateAction>
