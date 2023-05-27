@@ -2,11 +2,11 @@ package com.example.weatherapi.view_model
 
 import androidx.lifecycle.ViewModel
 import com.example.weatherapi.common.StateAction
-import com.example.weatherapi.common.UNITS_DEFAULT
-import com.example.weatherapi.common.ZIP_CODE_DEFAULT
 import com.example.weatherapi.domain.Repository
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
 import com.example.weatherapi.model.network.response.ForeCastResponse
+import com.example.weatherapi.model.network.response.GeoCodeResponse
+import com.example.weatherapi.model.network.response.GeoCodeResponseItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -30,17 +30,47 @@ class WeatherForecastViewModel @Inject constructor(
     private val _forecastResponse: MutableStateFlow<StateAction?> = MutableStateFlow(null)
     val forecastResponse: StateFlow<StateAction?> = _forecastResponse.asStateFlow()
 
-    init {
-        getWeather(ZIP_CODE_DEFAULT, UNITS_DEFAULT)
-        getForecast(ZIP_CODE_DEFAULT, UNITS_DEFAULT)
-    }
+    var lat: String? = null
+    var lon: String? = null
 
-    fun getWeather(code: String, unit: String) {
+
+    fun getGeoCode(city: String) {
         _weatherResponse.value = StateAction.Loading
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
-                    repository.getWeather(code = code, unit = unit).collect { stateAction ->
+                    repository.getGeoCode(cityName = city).collect { stateAction ->
+                        when (stateAction) {
+                            is StateAction.Succes<*> -> {
+                                val response = stateAction.response as GeoCodeResponse
+
+                                getWeatherByCoord(
+                                    lat = response.firstOrNull()?.lat.toString(),
+                                    long = response.firstOrNull()?.lon.toString()
+                                )
+
+                                getForecastByCoord(
+                                    lat = response.firstOrNull()?.lat.toString(),
+                                    long = response.firstOrNull()?.lon.toString()
+                                )
+                            }
+
+                            else -> {}
+                        }
+
+
+                    }
+                }
+            }
+        }
+    }
+
+    fun getWeatherByCoord(lat: String, long: String) {
+        _weatherResponse.value = StateAction.Loading
+        coroutineScope.launch(exceptionHandler) {
+            supervisorScope {
+                launch {
+                    repository.getWeatherByCoord(lat = lat, lon = long).collect { stateAction ->
                         when (stateAction) {
                             is StateAction.Succes<*> -> {
                                 val response = stateAction.response as WeatherDomain
@@ -63,20 +93,17 @@ class WeatherForecastViewModel @Inject constructor(
         }
     }
 
-    fun getForecast(code: String, unit: String) {
+    fun getForecastByCoord(lat: String, long: String) {
         _forecastResponse.value = StateAction.Loading
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
-                    repository.getForeCast(code = code, unit = unit).collect { stateAction ->
+                    repository.getForecastByCoord(lat = lat, lon = long).collect { stateAction ->
                         when (stateAction) {
                             is StateAction.Succes<*> -> {
-
                                 val response = stateAction.response as ForeCastResponse
                                 val httpCode = stateAction.code
-
-                                _forecastResponse.value =
-                                    StateAction.Succes(response, httpCode)
+                                _forecastResponse.value = StateAction.Succes(response, httpCode)
                             }
 
                             is StateAction.Error -> {
@@ -86,6 +113,7 @@ class WeatherForecastViewModel @Inject constructor(
 
                             else -> {}
                         }
+
 
                     }
                 }

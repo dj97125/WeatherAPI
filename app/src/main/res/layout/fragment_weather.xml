@@ -49,27 +49,27 @@
                         android:textStyle="bold"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintHorizontal_bias="0.03"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.034"
+                        app:layout_constraintVertical_bias="0.13"
                         tools:text="Mineappolis" />
 
                     <EditText
                         android:id="@+id/eTZipCode"
-                        android:layout_width="150dp"
+                        android:layout_width="100dp"
                         android:layout_height="wrap_content"
                         android:background="@null"
                         android:gravity="center"
-                        android:inputType="number"
-                        android:hint="Zip Code"
+                        android:hint="City Name"
+                        android:inputType="textShortMessage"
                         android:textColor="@color/white"
                         android:textColorHint="@color/white"
-                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintBottom_toBottomOf="@+id/tv_City"
                         app:layout_constraintEnd_toStartOf="@id/imVSettings"
                         app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@id/tv_City"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/tv_City" />
 
                     <ImageView
                         android:id="@+id/imVSearch"
@@ -77,11 +77,11 @@
                         android:layout_height="50sp"
                         android:padding="10dp"
                         android:src="@drawable/baseline_search_24"
-                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintBottom_toBottomOf="@+id/eTZipCode"
                         app:layout_constraintEnd_toStartOf="@id/imVSettings"
-                        app:layout_constraintHorizontal_bias="0.27"
+                        app:layout_constraintHorizontal_bias="0.0"
                         app:layout_constraintStart_toEndOf="@+id/eTZipCode"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/eTZipCode" />
 
 
                     <ImageView
@@ -90,10 +90,10 @@
                         android:layout_height="50sp"
                         android:padding="10dp"
                         android:src="@drawable/settings"
-                        app:layout_constraintBottom_toTopOf="@id/tv_Temperature"
+                        app:layout_constraintBottom_toBottomOf="@+id/imVSearch"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toEndOf="@+id/imVSearch"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        app:layout_constraintTop_toTopOf="@+id/imVSearch" />
 
                     <TextView
                         android:id="@+id/tv_Temperature"

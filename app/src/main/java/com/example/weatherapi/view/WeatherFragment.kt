@@ -1,6 +1,5 @@
 package com.example.weatherapi.view
 
-import android.app.AlertDialog
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -16,7 +15,6 @@ import com.example.weatherapi.common.IMAGES_URL
 import com.example.weatherapi.common.IMAGE_FORMAT
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.common.UNITS_DEFAULT
-import com.example.weatherapi.common.ZIP_CODE_DEFAULT
 import com.example.weatherapi.common.getTemperatureFormat
 import com.example.weatherapi.common.toast
 import com.example.weatherapi.databinding.FragmentWeatherBinding
@@ -33,8 +31,7 @@ import java.time.format.DateTimeFormatter
 @AndroidEntryPoint
 class WeatherFragment : BaseFragment() {
 
-    private var units: String = UNITS_DEFAULT
-    private var zipCode: String = ZIP_CODE_DEFAULT
+    private var cityName = ""
     private var isMessage: Boolean = false
 
     private val binding by lazy {
@@ -48,8 +45,7 @@ class WeatherFragment : BaseFragment() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View {
         initObservers()
 
@@ -57,8 +53,8 @@ class WeatherFragment : BaseFragment() {
         binding.apply {
             imVSearch.setOnClickListener {
                 isMessage = true
-                zipCode = binding.eTZipCode.text.toString()
-                weatherForecastViewModel.getWeather(code = zipCode, unit = units)
+                cityName = binding.eTZipCode.text.toString()
+                weatherForecastViewModel.getGeoCode(city = cityName)
                 initObservers()
             }
 
@@ -83,9 +79,10 @@ class WeatherFragment : BaseFragment() {
                 android.R.color.holo_green_dark,
             )
             setOnRefreshListener {
+                weatherForecastViewModel.apply {
+                    weatherForecastViewModel.getGeoCode(city = cityName)
+                }
 
-                weatherForecastViewModel.getWeather(code = zipCode, unit = units)
-                weatherForecastViewModel.getForecast(code = zipCode, unit = units)
                 isRefreshing = false
             }
         }
@@ -107,8 +104,8 @@ class WeatherFragment : BaseFragment() {
                             binding.apply {
                                 tvCity.text = retrievedInfo.name
                                 tvTemperature.text =
-                                    retrievedInfo.main?.temp?.getTemperatureFormat(units)
-                                tvDescription.text = retrievedInfo.weather.first()?.main
+                                    retrievedInfo.main?.temp?.getTemperatureFormat(UNITS_DEFAULT)
+                                tvDescription.text = retrievedInfo.weather.firstOrNull()?.main
                                 Picasso.get()
                                     .load(IMAGES_URL + retrievedInfo.weather.first()?.icon + IMAGE_FORMAT)
                                     .into(imVCurrentWeather)
@@ -146,8 +143,7 @@ class WeatherFragment : BaseFragment() {
 
                             response.list?.filter { forecastFilter ->
                                 forecastFilter.dt_txt?.substring(
-                                    0,
-                                    10
+                                    0, 10
                                 ) == dayAfterTomorrowDate.format(formatter)
                             }?.forEach { forecast ->
                                 makingForecastList.add(forecast)
@@ -163,7 +159,9 @@ class WeatherFragment : BaseFragment() {
                                 makingForecastList.add(forecast)
                             }
                             forecastAdapter.updateData(makingForecastList)
+
                             makingForecastList.clear()
+
 
 
                         }
@@ -186,8 +184,10 @@ class WeatherFragment : BaseFragment() {
                 }
             }
         }
+        forecastAdapter.clearForeCastData()
 
     }
+
 }
 
 

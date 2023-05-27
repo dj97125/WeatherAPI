@@ -17,15 +17,32 @@ import javax.inject.Inject
 
 
 interface NetworkDataSource {
-    fun getWeather(code: String, unit: String): Flow<StateAction>
-    fun getForeCast(code: String, unit: String): Flow<StateAction>
+    fun getGeoCode(cityName: String): Flow<StateAction>
+    fun getWeatherByCoord(lat: String, lon: String): Flow<StateAction>
+    fun getForecastByCoord(lat: String, lon: String): Flow<StateAction>
 }
 
 class NetworkDataSourceImpl @Inject constructor(
     private val service: WeatherApi
 ) : NetworkDataSource {
-    override fun getWeather(code: String, unit: String): Flow<StateAction> = flow {
-        val response = service.getWeather(zip = code, units = unit)
+    override fun getGeoCode(city: String): Flow<StateAction> = flow {
+        val response = service.getGeoCode(city = "${city},US")
+        if (response.isSuccessful) {
+            response.body()?.let {
+                emit(StateAction.Succes(it, response.code()))
+            }
+        } else {
+            if (response.code().toString().startsWith("4")) {
+                emit(StateAction.Error(Exception400()))
+            } else {
+                emit(StateAction.Error(FailedNetworkResponseException()))
+            }
+
+        }
+    }
+
+    override fun getWeatherByCoord(lat: String, lon: String): Flow<StateAction> = flow {
+        val response = service.getWeatherByCoord(lat = lat, lon = lon)
         if (response.isSuccessful) {
             response.body()?.let {
                 emit(StateAction.Succes(it.convertToDomainWeather(), response.code()))
@@ -40,8 +57,8 @@ class NetworkDataSourceImpl @Inject constructor(
         }
     }
 
-    override fun getForeCast(code: String, unit: String): Flow<StateAction> = flow {
-        val response = service.getForecast(zip = code, units = unit)
+    override fun getForecastByCoord(lat: String, lon: String): Flow<StateAction> = flow {
+        val response = service.getForecastByCoord(lat = lat, lon = lon)
         if (response.isSuccessful) {
             response.body()?.let {
                 emit(StateAction.Succes(it, response.code()))
@@ -55,6 +72,7 @@ class NetworkDataSourceImpl @Inject constructor(
 
         }
     }
+
 }
 
 private fun WeatherResponse.convertToDomainWeather(): WeatherDomain =

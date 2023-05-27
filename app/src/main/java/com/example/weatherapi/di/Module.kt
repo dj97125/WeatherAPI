@@ -35,6 +35,7 @@ import java.util.concurrent.TimeUnit
 @InstallIn(ViewModelComponent::class)
 interface Module {
 
+
     @Binds
     fun bindRepository(
         repositoryImpl: RepositoryImpl

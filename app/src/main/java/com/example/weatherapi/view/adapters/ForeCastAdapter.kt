@@ -25,6 +25,10 @@ class ForeCastAdapter(
         notifyDataSetChanged()
     }
 
+    fun clearForeCastData(){
+        forecast.clear()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ForecastViewHolder {
         return ForecastViewHolder(
             ItemWeatherBinding.inflate(

@@ -1,12 +1,9 @@
 package com.example.weatherapi.common
 
-import android.Manifest
 import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Context
-import android.content.pm.PackageManager
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -42,24 +39,16 @@ fun String.giveMeFormatDate(): String {
     return outputformat.format(date)
 }
 
-fun Context.hasLocationPermission(): Boolean {
-    return ContextCompat.checkSelfPermission(
-        this,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(
-        this,
-        Manifest.permission.ACCESS_FINE_LOCATION
-    ) == PackageManager.PERMISSION_GRANTED
-}
-
 fun Context.provideAlertPopUp(
     title: String,
     message: String
-) {
+) =
     AlertDialog.Builder(this).setTitle(title)
         .setMessage(message)
         .setNegativeButton("OK") { _, _ -> }
         .setCancelable(false)
         .create()
         .show()
-}
+
+
+
