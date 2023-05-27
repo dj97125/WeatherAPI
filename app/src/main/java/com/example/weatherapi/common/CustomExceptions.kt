@@ -6,5 +6,5 @@ class FailedNetworkResponseException(
 ) : Exception(message)
 
 class Exception400(
-    message: String = "Error: information not found"
+    message: String = "Error: city not found"
 ) : Exception(message)
