@@ -2,13 +2,13 @@ package com.example.weatherapi.view_model
 
 
 import app.cash.turbine.test
-import com.example.weatherapi.utilities.CoroutinesTestRule
-import com.example.weatherapi.fakes.FakeGeoCodeResponseItem
 import com.example.weatherapi.common.FailedNetworkResponseException
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.domain.Repository
 import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
+import com.example.weatherapi.fakes.FakeGeoCodeResponseItem
 import com.example.weatherapi.model.network.response.ForeCastResponse
+import com.example.weatherapi.utilities.CoroutinesTestRule
 import io.mockk.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.flowOf
@@ -125,19 +125,18 @@ class WeatherForecastViewModelTest {
 
 
             // Verify the expected calls to repository
-            coVerify { repository.getGeoCode(city) }
-            coVerify {
+            coVerifySequence {
+                repository.getGeoCode(city)
                 repository.getWeatherByCoord(
                     geoCodeResponse.first().lat.toString(),
                     geoCodeResponse.first().lon.toString()
                 )
-            }
-            coVerify {
                 repository.getForecastByCoord(
                     geoCodeResponse.first().lat.toString(),
                     geoCodeResponse.first().lon.toString()
                 )
             }
+
         }
 
     @Test
@@ -188,14 +187,12 @@ class WeatherForecastViewModelTest {
 
 
             // Verify the expected calls to repository
-            coVerify { repository.getGeoCode(city) }
-            coVerify {
+            coVerifySequence {
+                repository.getGeoCode(city)
                 repository.getWeatherByCoord(
                     geoCodeResponse.first().lat.toString(),
                     geoCodeResponse.first().lon.toString()
                 )
-            }
-            coVerify {
                 repository.getForecastByCoord(
                     geoCodeResponse.first().lat.toString(),
                     geoCodeResponse.first().lon.toString()
