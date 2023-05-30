@@ -2,8 +2,8 @@ package com.example.weatherapi.view_model
 
 
 import app.cash.turbine.test
-import com.example.weatherapi.CoroutinesTestRule
-import com.example.weatherapi.FakeGeoCodeResponseItem
+import com.example.weatherapi.utilities.CoroutinesTestRule
+import com.example.weatherapi.fakes.FakeGeoCodeResponseItem
 import com.example.weatherapi.common.FailedNetworkResponseException
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.domain.Repository
@@ -55,6 +55,9 @@ class WeatherForecastViewModelTest {
     @Test
     fun `getGeoCode should call repository and update weatherResponse and forecastResponse with a SUCCES call`() =
         runTest(testDispatcher) {
+            /**
+             * Given
+             */
             val city = FakeGeoCodeResponseItem.name.toString()
             val lon = FakeGeoCodeResponseItem.lon.toString()
             val lat = FakeGeoCodeResponseItem.lat.toString()
@@ -81,6 +84,9 @@ class WeatherForecastViewModelTest {
                 )
             )
             val stateActionList = mutableListOf<StateAction?>()
+            /**
+             * When
+             */
             viewModel.getGeoCode(city)
 
 
@@ -96,8 +102,9 @@ class WeatherForecastViewModelTest {
                 geoCodeResponse.first().lon.toString()
             )
 
-
-
+            /**
+             * Then
+             */
             viewModel.weatherResponse.test {
                 stateActionList.add(awaitItem())
                 val response = stateActionList.first() as StateAction.Succes<*>
@@ -136,6 +143,9 @@ class WeatherForecastViewModelTest {
     @Test
     fun `getGeoCode should call repository and not update weatherResponse and forecastResponse with an ERROR call`() =
         runTest(testDispatcher) {
+            /**
+             * Given
+             */
             val city = FakeGeoCodeResponseItem.name.toString()
             val geoCodeResponse = listOf(FakeGeoCodeResponseItem)
             val exception = FailedNetworkResponseException()
@@ -145,6 +155,10 @@ class WeatherForecastViewModelTest {
                     exception
                 )
             )
+
+            /**
+             * When
+             */
             viewModel.getGeoCode(city)
 
             viewModel.getWeatherByCoord(
@@ -159,7 +173,9 @@ class WeatherForecastViewModelTest {
                 geoCodeResponse.first().lon.toString()
             )
 
-
+            /**
+             * Then
+             */
             viewModel.weatherResponse.test() {
                 assertEquals(StateAction.Loading, awaitItem())
                 cancel()
@@ -191,6 +207,9 @@ class WeatherForecastViewModelTest {
     @Test
     fun `getWeatherByCoord should call repository and update weatherResponse with an ERROR state`() =
         runTest(testDispatcher) {
+            /**
+             * Given
+             */
             val geoCodeResponse = listOf(FakeGeoCodeResponseItem)
             val exception = FailedNetworkResponseException()
 
@@ -205,13 +224,17 @@ class WeatherForecastViewModelTest {
                 )
             )
 
+            /**
+             * When
+             */
             viewModel.getWeatherByCoord(
                 geoCodeResponse.first().lat.toString(),
                 geoCodeResponse.first().lon.toString()
             )
 
-
-
+            /**
+             * Then
+             */
             viewModel.weatherResponse.test() {
                 val item = awaitItem()
                 assertTrue(item is StateAction.Error)
@@ -232,6 +255,9 @@ class WeatherForecastViewModelTest {
     @Test
     fun `getForecastByCoord should call repository and update forecastResponse with an ERROR state`() =
         runTest(testDispatcher) {
+            /**
+             * Given
+             */
             val geoCodeResponse = listOf(FakeGeoCodeResponseItem)
             val exception = FailedNetworkResponseException()
 
@@ -245,14 +271,17 @@ class WeatherForecastViewModelTest {
                     exception
                 )
             )
-
+            /**
+             * When
+             */
             viewModel.getForecastByCoord(
                 geoCodeResponse.first().lat.toString(),
                 geoCodeResponse.first().lon.toString()
             )
 
-
-
+            /**
+             * Then
+             */
             viewModel.forecastResponse.test() {
                 val item = awaitItem()
                 assertTrue(item is StateAction.Error)

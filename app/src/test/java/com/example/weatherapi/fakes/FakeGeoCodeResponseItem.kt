@@ -1,4 +1,4 @@
-package com.example.weatherapi
+package com.example.weatherapi.fakes
 
 import com.example.weatherapi.model.network.response.GeoCodeResponseItem
 

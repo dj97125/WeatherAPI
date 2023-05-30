@@ -1,4 +1,4 @@
-package com.example.weatherapi
+package com.example.weatherapi.utilities
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi

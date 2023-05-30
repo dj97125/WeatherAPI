@@ -3,10 +3,7 @@ package com.example.weatherapi.view_model
 import androidx.lifecycle.ViewModel
 import com.example.weatherapi.common.StateAction
 import com.example.weatherapi.domain.Repository
-import com.example.weatherapi.domain.WeatherDomain.WeatherDomain
-import com.example.weatherapi.model.network.response.ForeCastResponse
 import com.example.weatherapi.model.network.response.GeoCodeResponse
-import com.example.weatherapi.model.network.response.GeoCodeResponseItem
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
@@ -24,10 +21,12 @@ class WeatherForecastViewModel @Inject constructor(
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
-    private val _weatherResponse: MutableStateFlow<StateAction?> = MutableStateFlow(StateAction.Loading)
+    private val _weatherResponse: MutableStateFlow<StateAction?> =
+        MutableStateFlow(StateAction.Loading)
     val weatherResponse: StateFlow<StateAction?> = _weatherResponse.asStateFlow()
 
-    private val _forecastResponse: MutableStateFlow<StateAction?> = MutableStateFlow(StateAction.Loading)
+    private val _forecastResponse: MutableStateFlow<StateAction?> =
+        MutableStateFlow(StateAction.Loading)
     val forecastResponse: StateFlow<StateAction?> = _forecastResponse.asStateFlow()
 
     var lat: String? = null
@@ -53,6 +52,7 @@ class WeatherForecastViewModel @Inject constructor(
                                     long = response.firstOrNull()?.lon.toString()
                                 )
                             }
+
                             else -> {}
                         }
 
@@ -68,49 +68,20 @@ class WeatherForecastViewModel @Inject constructor(
             supervisorScope {
                 launch {
                     repository.getWeatherByCoord(lat = lat, lon = long).collect { stateAction ->
-                        when (stateAction) {
-                            is StateAction.Succes<*> -> {
-                                val response = stateAction.response as WeatherDomain
-                                val httpCode = stateAction.code
-                                _weatherResponse.value = StateAction.Succes(response, httpCode)
-                            }
-
-                            is StateAction.Error -> {
-                                val retrievedFailure = stateAction.error
-                                _weatherResponse.value = StateAction.Error(retrievedFailure)
-                            }
-
-                            else -> {}
-                        }
-
-
+                        _weatherResponse.value = stateAction
                     }
                 }
             }
         }
     }
 
+
     fun getForecastByCoord(lat: String, long: String) {
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
                     repository.getForecastByCoord(lat = lat, lon = long).collect { stateAction ->
-                        when (stateAction) {
-                            is StateAction.Succes<*> -> {
-                                val response = stateAction.response as ForeCastResponse
-                                val httpCode = stateAction.code
-                                _forecastResponse.value = StateAction.Succes(response, httpCode)
-                            }
-
-                            is StateAction.Error -> {
-                                val retrievedFailure = stateAction.error
-                                _forecastResponse.value = StateAction.Error(retrievedFailure)
-                            }
-
-                            else -> {}
-                        }
-
-
+                        _forecastResponse.value = stateAction
                     }
                 }
             }
