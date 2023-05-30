@@ -24,10 +24,10 @@ class WeatherForecastViewModel @Inject constructor(
     private val coroutineScope: CoroutineScope
 ) : ViewModel() {
 
-    private val _weatherResponse: MutableStateFlow<StateAction?> = MutableStateFlow(null)
+    private val _weatherResponse: MutableStateFlow<StateAction?> = MutableStateFlow(StateAction.Loading)
     val weatherResponse: StateFlow<StateAction?> = _weatherResponse.asStateFlow()
 
-    private val _forecastResponse: MutableStateFlow<StateAction?> = MutableStateFlow(null)
+    private val _forecastResponse: MutableStateFlow<StateAction?> = MutableStateFlow(StateAction.Loading)
     val forecastResponse: StateFlow<StateAction?> = _forecastResponse.asStateFlow()
 
     var lat: String? = null
@@ -35,7 +35,6 @@ class WeatherForecastViewModel @Inject constructor(
 
 
     fun getGeoCode(city: String) {
-        _weatherResponse.value = StateAction.Loading
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
@@ -54,7 +53,6 @@ class WeatherForecastViewModel @Inject constructor(
                                     long = response.firstOrNull()?.lon.toString()
                                 )
                             }
-
                             else -> {}
                         }
 
@@ -66,7 +64,6 @@ class WeatherForecastViewModel @Inject constructor(
     }
 
     fun getWeatherByCoord(lat: String, long: String) {
-        _weatherResponse.value = StateAction.Loading
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
@@ -94,7 +91,6 @@ class WeatherForecastViewModel @Inject constructor(
     }
 
     fun getForecastByCoord(lat: String, long: String) {
-        _forecastResponse.value = StateAction.Loading
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
                 launch {
