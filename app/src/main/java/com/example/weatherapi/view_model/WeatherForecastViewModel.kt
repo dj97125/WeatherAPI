@@ -7,6 +7,8 @@ import com.example.weatherapi.model.network.response.GeoCodeResponse
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -47,10 +49,6 @@ class WeatherForecastViewModel @Inject constructor(
                                     long = response.firstOrNull()?.lon.toString()
                                 )
 
-                                getForecastByCoord(
-                                    lat = response.firstOrNull()?.lat.toString(),
-                                    long = response.firstOrNull()?.lon.toString()
-                                )
                             }
 
                             else -> {}
@@ -66,25 +64,22 @@ class WeatherForecastViewModel @Inject constructor(
     fun getWeatherByCoord(lat: String, long: String) {
         coroutineScope.launch(exceptionHandler) {
             supervisorScope {
-                launch {
-                    repository.getWeatherByCoord(lat = lat, lon = long).collect { stateAction ->
-                        _weatherResponse.value = stateAction
+                val differed = listOf(
+                    async {
+                        repository.getWeatherByCoord(lat = lat, lon = long).collect { stateAction ->
+                            _weatherResponse.value = stateAction
+                        }
+                    },
+                    async {
+                        repository.getForecastByCoord(lat = lat, lon = long)
+                            .collect { stateAction ->
+                                _forecastResponse.value = stateAction
+                            }
                     }
-                }
+                )
+                differed.awaitAll()
             }
         }
     }
 
-
-    fun getForecastByCoord(lat: String, long: String) {
-        coroutineScope.launch(exceptionHandler) {
-            supervisorScope {
-                launch {
-                    repository.getForecastByCoord(lat = lat, lon = long).collect { stateAction ->
-                        _forecastResponse.value = stateAction
-                    }
-                }
-            }
-        }
-    }
 }

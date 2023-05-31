@@ -69,10 +69,6 @@ class MainActivity : AppCompatActivity() {
                             lat = location.latitude.toString(),
                             long = location.longitude.toString()
                         )
-                        getForecastByCoord(
-                            lat = location.latitude.toString(),
-                            long = location.longitude.toString()
-                        )
                         lat = location.latitude.toString()
                         lon = location.longitude.toString()
                     }

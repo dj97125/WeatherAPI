@@ -96,12 +96,6 @@ class WeatherForecastViewModelTest {
             )
 
 
-
-            viewModel.getForecastByCoord(
-                geoCodeResponse.first().lat.toString(),
-                geoCodeResponse.first().lon.toString()
-            )
-
             /**
              * Then
              */
@@ -167,10 +161,6 @@ class WeatherForecastViewModelTest {
 
 
 
-            viewModel.getForecastByCoord(
-                geoCodeResponse.first().lat.toString(),
-                geoCodeResponse.first().lon.toString()
-            )
 
             /**
              * Then
@@ -248,53 +238,5 @@ class WeatherForecastViewModelTest {
             }
 
         }
-
-    @Test
-    fun `getForecastByCoord should call repository and update forecastResponse with an ERROR state`() =
-        runTest(testDispatcher) {
-            /**
-             * Given
-             */
-            val geoCodeResponse = listOf(FakeGeoCodeResponseItem)
-            val exception = FailedNetworkResponseException()
-
-            coEvery {
-                repository.getForecastByCoord(
-                    lat = geoCodeResponse.first().lat.toString(),
-                    lon = geoCodeResponse.first().lon.toString()
-                )
-            } returns flowOf(
-                StateAction.Error(
-                    exception
-                )
-            )
-            /**
-             * When
-             */
-            viewModel.getForecastByCoord(
-                geoCodeResponse.first().lat.toString(),
-                geoCodeResponse.first().lon.toString()
-            )
-
-            /**
-             * Then
-             */
-            viewModel.forecastResponse.test() {
-                val item = awaitItem()
-                assertTrue(item is StateAction.Error)
-                assertEquals(exception.message, (item as StateAction.Error).error.message)
-                cancel()
-            }
-
-
-            coVerify {
-                repository.getForecastByCoord(
-                    geoCodeResponse.first().lat.toString(),
-                    geoCodeResponse.first().lon.toString()
-                )
-            }
-
-        }
-
 
 }
